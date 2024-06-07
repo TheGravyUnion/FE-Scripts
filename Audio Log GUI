@@ -71,7 +71,7 @@ local fake_module_scripts = {}
 
 -- Fake Local Scripts:
 
-local function AMAT_fake_script() -- Fake Script: StarterGui.Audio Logger.BG.LocalScript
+local function VCBTCHN_fake_script() -- Fake Script: StarterGui.Audio Logger.BG.LocalScript
     local script = Instance.new("LocalScript")
     script.Name = "LocalScript"
     script.Parent = Converted["_BG"]
@@ -177,4 +177,4 @@ local function AMAT_fake_script() -- Fake Script: StarterGui.Audio Logger.BG.Loc
 	end)
 end
 
-coroutine.wrap(AMAT_fake_script)()
+coroutine.wrap(VCBTCHN_fake_script)()
