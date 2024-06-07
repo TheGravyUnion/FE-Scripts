@@ -1,0 +1,180 @@
+-- Instances:
+
+local Converted = {
+	["_Audio Logger"] = Instance.new("ScreenGui");
+	["_BG"] = Instance.new("Frame");
+	["_LocalScript"] = Instance.new("LocalScript");
+	["_Username"] = Instance.new("TextBox");
+	["_Log"] = Instance.new("TextButton");
+	["_Result(s)"] = Instance.new("TextBox");
+}
+
+-- Properties:
+
+Converted["_Audio Logger"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Converted["_Audio Logger"].Name = "Audio Logger"
+Converted["_Audio Logger"].Parent = game:GetService("CoreGui")
+
+Converted["_BG"].BackgroundColor3 = Color3.fromRGB(60.00000022351742, 65.0000037252903, 75.00000312924385)
+Converted["_BG"].BackgroundTransparency = 0.5
+Converted["_BG"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_BG"].Position = UDim2.new(0.278336018, 0, 0.290697694, 0)
+Converted["_BG"].Size = UDim2.new(0, 304, 0, 213)
+Converted["_BG"].Name = "BG"
+Converted["_BG"].Parent = Converted["_Audio Logger"]
+
+Converted["_Username"].CursorPosition = -1
+Converted["_Username"].PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_Username"].PlaceholderText = "Username"
+Converted["_Username"].Text = ""
+Converted["_Username"].TextColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_Username"].TextScaled = true
+Converted["_Username"].TextSize = 14
+Converted["_Username"].TextWrapped = true
+Converted["_Username"].BackgroundColor3 = Color3.fromRGB(150.0000062584877, 160.00000566244125, 170.0000050663948)
+Converted["_Username"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_Username"].Position = UDim2.new(0.046052631, 0, 0.075117372, 0)
+Converted["_Username"].Size = UDim2.new(0, 275, 0, 50)
+Converted["_Username"].Name = "Username"
+Converted["_Username"].Parent = Converted["_BG"]
+
+Converted["_Log"].Text = "Log"
+Converted["_Log"].TextColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_Log"].TextScaled = true
+Converted["_Log"].TextSize = 14
+Converted["_Log"].TextWrapped = true
+Converted["_Log"].BackgroundColor3 = Color3.fromRGB(50.000000819563866, 55.00000052154064, 60.00000022351742)
+Converted["_Log"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_Log"].Position = UDim2.new(0.046052631, 0, 0.309859157, 0)
+Converted["_Log"].Size = UDim2.new(0, 275, 0, 27)
+Converted["_Log"].Name = "Log"
+Converted["_Log"].Parent = Converted["_BG"]
+
+Converted["_Result(s)"].ClearTextOnFocus = false
+Converted["_Result(s)"].CursorPosition = -1
+Converted["_Result(s)"].PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_Result(s)"].Text = ""
+Converted["_Result(s)"].TextColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_Result(s)"].TextScaled = true
+Converted["_Result(s)"].TextSize = 14
+Converted["_Result(s)"].TextWrapped = true
+Converted["_Result(s)"].BackgroundColor3 = Color3.fromRGB(150.0000062584877, 160.00000566244125, 170.0000050663948)
+Converted["_Result(s)"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_Result(s)"].Position = UDim2.new(0.046052631, 0, 0.511737108, 0)
+Converted["_Result(s)"].Size = UDim2.new(0, 275, 0, 87)
+Converted["_Result(s)"].Name = "Result(s)"
+Converted["_Result(s)"].Parent = Converted["_BG"]
+
+-- Fake Module Scripts:
+
+local fake_module_scripts = {}
+
+-- Fake Local Scripts:
+
+local function AMAT_fake_script() -- Fake Script: StarterGui.Audio Logger.BG.LocalScript
+    local script = Instance.new("LocalScript")
+    script.Name = "LocalScript"
+    script.Parent = Converted["_BG"]
+    local req = require
+    local require = function(obj)
+        local fake = fake_module_scripts[obj]
+        if fake then
+            return fake()
+        end
+        return req(obj)
+    end
+
+	local dragging = nil
+	local dragInput = nil
+	local dragStart = nil
+	local startP = nil
+	
+	script.Parent.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startP = script.Parent.Position
+	
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+	
+	script.Parent.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+	
+	game:GetService("UserInputService").InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			local delta = input.Position - dragStart
+			script.Parent.Position = startP + UDim2.new(0, delta.X, 0, delta.Y)
+		end
+	end)
+	
+	local function convertString(table, indent)
+		if type(table) == "table" then
+			local result = "{\n"
+			local nextIndent = (indent or 0) + 1
+	
+			for key, value in pairs(table) do
+				result = result .. string.rep("    ", nextIndent)
+				if type(key) == "number" then
+					result = result .. "[" .. key .. "] = "
+				else
+					result = result .. key .. " = "
+				end
+	
+				result = result .. convertString(value, nextIndent) .. ",\n"
+			end
+	
+			result = result .. string.rep("    ", (indent or 0)) .. "}"
+			return result
+		else
+			return tostring(table)
+		end
+	end
+	
+	local function findPlayer(String)
+		String = String:gsub("%s+", "")
+	
+		for _,v in pairs(game:GetService("Players"):GetPlayers()) do
+			if v.Name:lower():match('^'.. String:lower()) then
+				return v
+			end
+		end
+		return nil
+	end
+	
+	script.Parent:WaitForChild("Log").MouseButton1Click:Connect(function()
+		local Player = findPlayer(script.Parent:WaitForChild("Username").Text)
+	
+		local Logged = {}
+	
+		if Player and Player.Character then
+			for _,v in pairs(Player.Character:GetDescendants()) do
+				if v.ClassName == "Tool" then
+					for _,a in pairs(v:GetDescendants()) do
+						if a.ClassName == "Sound" then
+							table.insert(Logged, a.SoundId)
+						end
+					end
+				end
+			end
+			
+			local String = convertString(Logged)
+			
+			script.Parent:WaitForChild("Result(s)").Text = String
+		else
+			script.Parent:WaitForChild("Log").Text = "Not Found"
+			task.wait(0.5)
+			script.Parent:WaitForChild("Log").Text = "Log"
+		end
+	end)
+end
+
+coroutine.wrap(AMAT_fake_script)()
