@@ -1,6 +1,30 @@
---TheGravyNavy (https://github.com/TheGravyUnion)
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
-local Character = game:GetService("Players").LocalPlayer.Character
+local RunService = game:GetService("RunService")
+
+local originalCFrame = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame
+
+if LocalPlayer.Character:FindFirstChildOfClass("Humanoid").Sit == true then
+	LocalPlayer.Character:FindFirstChildOfClass("Humanoid").Sit = false
+end
+
+task.wait()
+
+LocalPlayer.Character:BreakJoints()
+LocalPlayer.Character = nil
+
+game:GetService("Workspace").DescendantAdded:Connect(function(Desc)
+	if Desc.Name == "Animate" or Desc.Name == "Anima" then
+		Desc.Enabled = false 
+	end
+end)
+
+repeat task.wait() until LocalPlayer.Character ~= nil
+
+RunService.Heartbeat:Wait()
+
+local Character = LocalPlayer.Character
 local Humanoid = Character:FindFirstChildOfClass("Humanoid") or Character:WaitForChild("Humanoid")
 local Torso = Character:WaitForChild("Torso")
 local RightShoulder = Torso:WaitForChild("Right Shoulder")
@@ -13,6 +37,11 @@ local Pose = "Standing"
 
 local toolAnim = "None"
 local toolAnimTime = 0
+
+task.spawn(function()
+	repeat task.wait() until Character:FindFirstChild("HumanoidRootPart")
+	Character.HumanoidRootPart.CFrame = originalCFrame
+end)
 
 Humanoid.Running:Connect(function(Speed)
 	if Speed > 0 then
@@ -55,11 +84,11 @@ Humanoid.Died:Connect(function()
 end)
 
 if Character:FindFirstChild("Animate") then
-	Character.Animate:Destroy()
+	Character.Animate.Enabled = false
 end
 
 if Character:FindFirstChild("Anima") then
-	Character.Anima:Destroy()
+	Character.Anima.Enabled = false
 end
 
 task.spawn(function()
@@ -89,7 +118,7 @@ task.spawn(function()
 			local SeatPart = Humanoid.SeatPart
 			if SeatPart ~= nil and SeatPart.ClassName == "Seat" then
 				Humanoid.Sit = false
-				game:GetService("RunService").Heartbeat:Wait()
+				RunService.Heartbeat:Wait()
 				Humanoid.Sit = true
 				Pose = "Seated"
 				if SeatPart ~= nil then
